@@ -1,0 +1,21 @@
+#config:
+#  location: properties
+
+spring:
+  # db
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/testdb?characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: root
+  # redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: test-producer-group
+  consumer:
+    group: test-consumer-group

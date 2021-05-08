@@ -1,0 +1,10 @@
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: test-producer-group
+  consumer:
+    group: test-consumer-group
+
+config:
+  mq:
+    topicPrefix: local

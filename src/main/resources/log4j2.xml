@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，
+ 你会看到log4j2内部各种详细输出。可以设置成OFF(关闭)或ERROR(只输出错误信息)
+-->
+<Configuration status="OFF">
+	<Properties>
+		<!--<property name="LOG_HOME" value="${catalina.home}/springboot/logs"/>-->
+        <Property name="LOG_HOME" value="./logs/springboot"/>
+        <Property name="LOG_DATE_PATTERN">yyyy-MM-dd HH:mm:ss.SSS</Property>
+		<Property name="LOG_PATTERN">[%d{${LOG_DATE_PATTERN}}] [%t] [%p] [%logger{0}:%L] %m%n</Property>
+		<Property name="LOG_MAX_SIZE">1 GB</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT" follow="true">
+			<PatternLayout pattern="${LOG_PATTERN}" />
+		</Console>
+
+        <!-- Appender的immediateFlush属性：立刻刷写到磁盘。如果设置为false,能明显示的提升性能，即使是同步日志也有帮助 -->
+		<RollingFile name="appAppender" immediateFlush="false" fileName="${LOG_HOME}/app.log" filePattern="${LOG_HOME}/app.%d{yyyy-MM-dd}.log.gz">
+			<PatternLayout pattern="${LOG_PATTERN}"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+				<!--<SizeBasedTriggeringPolicy size="${LOG_MAX_SIZE}" />-->
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${LOG_HOME}/" maxDepth="1">
+					<IfFileName glob="*.log" />
+					<!-- !Note: 这里的age必须和filePattern协调, 后者是精确到HH, 这里就要写成xH, xd就不起作用
+                    另外, 数字最好>2, 否则可能造成删除的时候, 最近的文件还处于被占用状态,导致删除不成功!-->
+					<!-- 14天 -->
+					<IfLastModified age="14d" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<RollingFile name="druidAppender" immediateFlush="false" fileName="${LOG_HOME}/druid-sql.log" filePattern="${LOG_HOME}/druid-sql.%d{yyyy-MM-dd}.log.gz">
+			<PatternLayout pattern="${LOG_PATTERN}"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+				<!--<SizeBasedTriggeringPolicy size="${LOG_MAX_SIZE}" />-->
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${LOG_HOME}/" maxDepth="1">
+					<IfFileName glob="*.log" />
+					<IfLastModified age="14d" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<RollingFile name="mqClientAppender" immediateFlush="false" fileName="${LOG_HOME}/mq-client.log" filePattern="${LOG_HOME}/mq-client.%d{yyyy-MM-dd}.log.gz">
+			<PatternLayout pattern="${LOG_PATTERN}"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+				<!--<SizeBasedTriggeringPolicy size="${LOG_MAX_SIZE}" />-->
+			</Policies>
+			<DefaultRolloverStrategy>
+				<Delete basePath="${LOG_HOME}/" maxDepth="1">
+					<IfFileName glob="*.log" />
+					<IfLastModified age="14d" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<Async name="asyncAppender">
+			<AppenderRef ref="appAppender" />
+		</Async>
+	</Appenders>
+
+	<Loggers>
+		<Root level="INFO">
+			<AppenderRef ref="console" />
+			<AppenderRef ref="asyncAppender" />
+		</Root>
+
+        <AsyncLogger name="druid.sql.Statement" level="debug" additivity="false">
+            <AppenderRef ref="druidAppender"/>
+        </AsyncLogger>
+
+		<!-- additivity属性：如果设置为false,logger不会把日志流添加到root的日志,如果设置为true,则会添加到root的日志,如果是异步日志时，建议设置为false -->
+		<AsyncLogger name="RocketmqClient" level="INFO" additivity="false">
+			<AppenderRef ref="mqClientAppender" />
+		</AsyncLogger>
+
+        <!--log4j2 自带过滤日志-->
+        <Logger name="org.apache.catalina.startup.DigesterFactory" level="error" />
+        <Logger name="org.apache.catalina.util.LifecycleBase" level="error" />
+        <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="warn" />
+        <logger name="org.apache.sshd.common.util.SecurityUtils" level="warn"/>
+        <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn" />
+        <Logger name="org.crsh.plugin" level="warn" />
+        <logger name="org.crsh.ssh" level="warn"/>
+        <Logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="error" />
+        <Logger name="org.hibernate.validator.internal.util.Version" level="warn" />
+        <logger name="org.springframework.boot.actuate.autoconfigure.CrshAutoConfiguration" level="warn"/>
+        <logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>
+        <logger name="org.thymeleaf" level="warn"/>	</Loggers>
+</Configuration>
