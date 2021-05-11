@@ -3,6 +3,7 @@ package com.yty.boot2.controller;
 import com.yty.boot2.mq.MessageProducer;
 import com.yty.boot2.mq.support.MessageBean;
 import com.yty.boot2.mq.support.MessageConstants;
+import com.yty.boot2.mq.support.MessageConsumerManager;
 import com.yty.boot2.mq.support.MessageDelayLevel;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.SendResult;
@@ -25,6 +26,19 @@ public class MQController {
 
     @Resource
     private MessageProducer messageProducer;
+
+    @Resource
+    private MessageConsumerManager messageConsumerManager;
+
+    @PostMapping(path = "/suspend")
+    public void suspend() {
+        messageConsumerManager.suspend();
+    }
+
+    @PostMapping(path = "/resume")
+    public void resume() {
+        messageConsumerManager.resume();
+    }
 
     @PostMapping(path = "/send")
     public SendResult send(@RequestBody MQMessageRequest request) {

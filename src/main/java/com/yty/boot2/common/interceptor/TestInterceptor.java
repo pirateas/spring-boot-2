@@ -1,4 +1,4 @@
-package com.yty.boot2.interceptor;
+package com.yty.boot2.common.interceptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class TestInterceptor extends HandlerInterceptorAdapter {
         if (!(handler instanceof HandlerMethod)) {//只处理正确的请求
             return true;
         }
-        logger.info("preHandle={}", request.getRequestURI());
+//        logger.info("preHandle={}", request.getRequestURI());
         return true;
     }
 

@@ -60,7 +60,6 @@ public class GlobalExceptionHandler implements ResponseBodyAdvice {
             List<String> fields = cause.getPath().stream().map(JsonMappingException.Reference::getFieldName).collect(Collectors.toList());
             return ApiResponse.ofError(CommonErrorCode.PARAM_IS_ILLEGAL.getCode(), String.format(CommonErrorCode.PARAM_IS_ILLEGAL.getMessage(), JOINER.join(fields)));
         }
-        LOGGER.error(e.getMessage(), e);
         return ApiResponse.ofError(e.getMessage());
     }
 

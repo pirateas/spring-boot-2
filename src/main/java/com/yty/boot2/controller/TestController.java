@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -28,5 +29,23 @@ public class TestController {
     @PostMapping(path = "/save")
     public void save(@RequestBody TestEntity entity) {
         testService.create(entity);
+    }
+
+    @PostMapping(value = "/upload")
+    public String upload(UploadRequest request) {
+        return request.getFile().getOriginalFilename();
+    }
+
+    public static class UploadRequest {
+        public MultipartFile getFile() {
+            return file;
+        }
+
+        public UploadRequest setFile(MultipartFile file) {
+            this.file = file;
+            return this;
+        }
+
+        private MultipartFile file;
     }
 }

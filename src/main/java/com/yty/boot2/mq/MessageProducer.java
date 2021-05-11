@@ -1,5 +1,6 @@
 package com.yty.boot2.mq;
 
+import com.yty.boot2.common.trace.TraceIdGenerator;
 import com.yty.boot2.mq.support.MessageBean;
 import com.yty.boot2.mq.support.MessageConstants;
 import org.apache.commons.collections.MapUtils;
@@ -13,6 +14,7 @@ import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.messaging.MessagingException;
@@ -129,7 +131,13 @@ public class MessageProducer {
     }
 
     private org.springframework.messaging.Message buildMessage(MessageBean message) {
-        MessageBuilder<Object> messageBuilder = MessageBuilder.withPayload(message.getBody());
+        String traceId = MDC.get(TraceIdGenerator.TRACE_ID);
+        if (StringUtils.isBlank(traceId)) {
+            traceId = TraceIdGenerator.generate();
+        }
+        MessageBuilder<Object> messageBuilder = MessageBuilder
+                .withPayload(message.getBody())
+                .setHeader(TraceIdGenerator.TRACE_ID, traceId);
         if (MapUtils.isNotEmpty(message.getProperties())) {
             message.getProperties().forEach(messageBuilder::setHeader);
         }
