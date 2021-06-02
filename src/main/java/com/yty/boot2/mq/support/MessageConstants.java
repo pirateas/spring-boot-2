@@ -8,6 +8,7 @@ public interface MessageConstants {
 
     interface Topic {
         String TEST = "test-topic";
+        String TEST_1 = "test-topic-1";
     }
 
     interface Tag {

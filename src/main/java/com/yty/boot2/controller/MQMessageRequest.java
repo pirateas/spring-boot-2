@@ -11,9 +11,19 @@ import java.io.Serializable;
  */
 public class MQMessageRequest implements Serializable {
 
+    private String topic;
     private String hashKey;
     private String message;
     private String tag;
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public MQMessageRequest setTopic(String topic) {
+        this.topic = topic;
+        return this;
+    }
 
     public String getMessage() {
         return message;

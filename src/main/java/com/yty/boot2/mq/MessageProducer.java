@@ -2,7 +2,6 @@ package com.yty.boot2.mq;
 
 import com.yty.boot2.common.trace.TraceIdGenerator;
 import com.yty.boot2.mq.support.MessageBean;
-import com.yty.boot2.mq.support.MessageConstants;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -123,7 +122,7 @@ public class MessageProducer {
     }
 
     private String convertDestination(MessageBean message) {
-        String destination = MessageConstants.Topic.TEST;
+        String destination = message.getTopic();
         if (StringUtils.isNotBlank(message.getTags())) {
             destination +=  ":" + message.getTags();
         }

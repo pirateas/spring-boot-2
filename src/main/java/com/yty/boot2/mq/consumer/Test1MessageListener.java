@@ -15,16 +15,16 @@ import java.nio.charset.Charset;
  * @author yangtianyu
  */
 @Component
-@RocketMQMessageListener(topic = MessageConstants.Topic.TEST, consumerGroup = "${rocketmq.consumer.group}")
-public class MessageExtListener extends BaseMessageListener implements RocketMQListener<MessageExt> {
+@RocketMQMessageListener(topic = MessageConstants.Topic.TEST_1, consumerGroup = "${rocketmq.consumer.group}-1")
+public class Test1MessageListener extends BaseMessageListener implements RocketMQListener<MessageExt> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageExtListener.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Test1MessageListener.class);
 
     @Override
     public void onMessage(MessageExt message) {
-        LOGGER.info("MessageExtConsumer received message, message: {}", message);
+        LOGGER.info("received message: {}", message);
 
         String body = new String(message.getBody(), Charset.forName("UTF-8"));
-        LOGGER.info("MessageExtConsumer received message, body: {}", body);
+        LOGGER.info("received body: {}", body);
     }
 }

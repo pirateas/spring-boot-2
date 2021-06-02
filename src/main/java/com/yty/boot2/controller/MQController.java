@@ -5,6 +5,7 @@ import com.yty.boot2.mq.support.MessageBean;
 import com.yty.boot2.mq.support.MessageConstants;
 import com.yty.boot2.mq.support.MessageConsumerManager;
 import com.yty.boot2.mq.support.MessageDelayLevel;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
@@ -42,7 +43,11 @@ public class MQController {
 
     @PostMapping(path = "/send")
     public SendResult send(@RequestBody MQMessageRequest request) {
-        MessageBean message = MessageBean.builder(MessageConstants.Topic.TEST)
+        String topic = request.getTopic();
+        if (StringUtils.isBlank(topic)) {
+            topic = MessageConstants.Topic.TEST;
+        }
+        MessageBean message = MessageBean.builder(topic)
                 .withTags(request.getTag())
                 .withBody(request)
                 .addPropertie("testKey", "testValue")
