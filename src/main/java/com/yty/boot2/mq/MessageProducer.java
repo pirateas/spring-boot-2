@@ -98,6 +98,7 @@ public class MessageProducer {
     }
 
     public void sendInTransaction(MessageBean message) {
+        // 如果当前在事务中，通过@TransactionalEventListener实现事务消息，事务完成后再执行发送消息
         if (TransactionSynchronizationManager.isActualTransactionActive()) {
             applicationContext.publishEvent(message);
         }
