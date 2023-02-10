@@ -117,7 +117,7 @@ public class MessageProducer {
 
             @Override
             public void onException(Throwable throwable) {
-                LOGGER.info("asyncSend onException Throwable={}", throwable);
+                LOGGER.info("asyncSend onException Throwable={}", throwable.getMessage(), throwable);
             }
         });
     }
