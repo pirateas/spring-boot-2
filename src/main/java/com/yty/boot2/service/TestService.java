@@ -9,7 +9,6 @@ import com.yty.boot2.mq.support.MessageBean;
 import com.yty.boot2.mq.support.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +37,7 @@ public class TestService {
     @Resource
     private MessageProducer messageProducer;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void create(TestEntity entity) {
         entity.setCreateTime(new Date());
         testMapper.create(entity);
