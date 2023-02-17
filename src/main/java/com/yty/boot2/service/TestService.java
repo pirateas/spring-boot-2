@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
  * @author yangtianyu
  */
 @Service
-@Transactional
 public class TestService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestService.class);
