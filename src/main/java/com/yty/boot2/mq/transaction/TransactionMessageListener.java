@@ -55,7 +55,7 @@ public class TransactionMessageListener implements RocketMQLocalTransactionListe
         messageProducer.send(message);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public RocketMQLocalTransactionState executeLocalTransaction(Message message, Object arg) {
         TransactionStatus transactionStatus = TransactionAspectSupport.currentTransactionStatus();
