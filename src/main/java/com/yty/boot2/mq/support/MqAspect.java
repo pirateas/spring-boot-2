@@ -38,10 +38,10 @@ public class MqAspect {
             return proceed;
         } catch (Exception e) {
             String className = joinPoint.getSignature().getDeclaringType().getSimpleName();
+            LOGGER.error("MQListener onMessage error: class={}, errorMessage={}", className, e.getMessage(), e);
             throw e;
         } finally {
             MDC.remove(TraceIdGenerator.TRACE_ID);
         }
     }
-
 }

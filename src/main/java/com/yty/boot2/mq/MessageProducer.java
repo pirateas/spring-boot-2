@@ -43,9 +43,9 @@ public class MessageProducer {
     @Resource
     private RocketMQTemplate rocketMQTemplate;
 
-    private MessageQueueSelector messageQueueSelector = new SelectMessageQueueByHash();
+    private final MessageQueueSelector messageQueueSelector = new SelectMessageQueueByHash();
 
-    private MappingJackson2MessageConverter messageConverter = new MappingJackson2MessageConverter();
+    private final MappingJackson2MessageConverter messageConverter = new MappingJackson2MessageConverter();
 
     @PostConstruct
     private void initNamespace() {
@@ -102,13 +102,17 @@ public class MessageProducer {
         if (TransactionSynchronizationManager.isActualTransactionActive()) {
             applicationContext.publishEvent(message);
         }
-        send(message);
+        asyncSend(message);
 //        TransactionSendResult sendResult = rocketMQTemplate.sendMessageInTransaction(convertDestination(message), buildMessage(message), null);
 //        LOGGER.info("TransactionSendResult={}", sendResult);
 //        return sendResult;
     }
 
     public void asyncSend(MessageBean message) {
+        int delayLevel = 0;
+        if (Objects.nonNull(message.getDelayLevel())) {
+            delayLevel = message.getDelayLevel().getLevel();
+        }
         rocketMQTemplate.asyncSend(convertDestination(message), buildMessage(message), new SendCallback() {
             @Override
             public void onSuccess(SendResult result) {
@@ -117,9 +121,9 @@ public class MessageProducer {
 
             @Override
             public void onException(Throwable throwable) {
-                LOGGER.info("asyncSend onException Throwable={}", throwable.getMessage(), throwable);
+                LOGGER.info("asyncSend onException message={}", throwable.getMessage(), throwable);
             }
-        });
+        }, rocketMQTemplate.getProducer().getSendMsgTimeout(), delayLevel);
     }
 
     private String convertDestination(MessageBean message) {
@@ -146,6 +150,9 @@ public class MessageProducer {
 
     private byte[] convertBody(Object body) {
         org.springframework.messaging.Message<?> message = messageConverter.toMessage(body, null, null);
+        if (Objects.isNull(message)) {
+            return new byte[]{};
+        }
         return (byte[]) message.getPayload();
     }
 }

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author yangtianyu
@@ -24,7 +24,7 @@ public class TestMessageListener extends BaseMessageListener implements RocketMQ
     public void onMessage(MessageExt message) {
         LOGGER.info("received message: {}", message);
 
-        String body = new String(message.getBody(), Charset.forName("UTF-8"));
+        String body = new String(message.getBody(), StandardCharsets.UTF_8);
         LOGGER.info("received body: {}", body);
     }
 }
