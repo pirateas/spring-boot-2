@@ -1,6 +1,6 @@
 spring:
   # db
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/testdb?characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/test?characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false
     username: root
     password: root

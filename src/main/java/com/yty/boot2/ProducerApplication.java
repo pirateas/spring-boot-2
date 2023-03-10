@@ -4,12 +4,10 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.apache.rocketmq.spring.support.RocketMQUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Producer, using RocketMQTemplate sends a variety of messages
@@ -32,7 +30,7 @@ public class ProducerApplication implements CommandLineRunner {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("test-consumer-group");
         consumer.setNamespace("local");
         consumer.setVipChannelEnabled(false);
-        consumer.setInstanceName(RocketMQUtil.getInstanceName(nameServer));
+//        consumer.setInstanceName(RocketMQUtil.getInstanceName(nameServer));
         consumer.setNamesrvAddr(nameServer);
 
         consumer.subscribe("test-topic", "*");

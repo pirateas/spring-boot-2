@@ -14,7 +14,6 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -22,7 +21,6 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.Objects;
 
@@ -31,9 +29,6 @@ import java.util.Objects;
  */
 @Component
 public class MessageProducer {
-
-    @Value("${config.mq.topicPrefix}")
-    private String topicPrefix;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageProducer.class);
 
@@ -46,11 +41,6 @@ public class MessageProducer {
     private final MessageQueueSelector messageQueueSelector = new SelectMessageQueueByHash();
 
     private final MappingJackson2MessageConverter messageConverter = new MappingJackson2MessageConverter();
-
-    @PostConstruct
-    private void initNamespace() {
-        rocketMQTemplate.getProducer().setNamespace(topicPrefix);
-    }
 
     private DefaultMQProducer getMqProducer() {
         return rocketMQTemplate.getProducer();

@@ -1,17 +1,10 @@
 package com.yty.boot2.mq.support;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.client.consumer.MessageSelector;
-import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
-import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQPushConsumerLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.util.Objects;
 
 /**
  * @author yangtianyu
@@ -21,9 +14,6 @@ public abstract class BaseMessageListener implements RocketMQPushConsumerLifecyc
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseMessageListener.class);
 
     private static final int DEFAULT_CONSUME_THREAD = 20;
-
-    @Value("${config.mq.topicPrefix}")
-    private String topicPrefix;
 
     @Override
     public void prepareStart(DefaultMQPushConsumer consumer) {
@@ -38,29 +28,5 @@ public abstract class BaseMessageListener implements RocketMQPushConsumerLifecyc
 
         consumer.setConsumeThreadMax(DEFAULT_CONSUME_THREAD);
         consumer.setConsumeThreadMin(DEFAULT_CONSUME_THREAD);
-
-        // subscribe topic with namespace
-        if (StringUtils.isNotBlank(topicPrefix)) {
-            consumer.setNamespace(topicPrefix);
-            try {
-                RocketMQMessageListener rocketMQMessageListener = this.getClass().getAnnotation(RocketMQMessageListener.class);
-                if (Objects.nonNull(rocketMQMessageListener)) {
-                    String topic = rocketMQMessageListener.topic();
-                    switch (rocketMQMessageListener.selectorType()) {
-                        case TAG:
-                            consumer.subscribe(topic, rocketMQMessageListener.selectorExpression());
-                            break;
-                        case SQL92:
-                            consumer.subscribe(topic, MessageSelector.bySql(rocketMQMessageListener.selectorExpression()));
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Property 'selectorType' was wrong.");
-                    }
-                    consumer.unsubscribe(topic);
-                }
-            } catch (MQClientException e) {
-                LOGGER.error("subscribe topic with namespace fail", e);
-            }
-        }
     }
 }

@@ -4,7 +4,8 @@
 -->
 <Configuration status="OFF">
 	<Properties>
-		<property name="LOG_HOME" value="${sys:catalina.home}/logs/springboot"/>
+		<property name="LOG_HOME" value="${catalina.home}/logs/springboot"/>
+<!--		<property name="LOG_HOME" value="${sys:catalina.home}/logs/springboot"/>-->
         <Property name="LOG_DATE_PATTERN">yyyy-MM-dd HH:mm:ss.SSS</Property>
 		<Property name="LOG_PATTERN">[%d{${LOG_DATE_PATTERN}}][%X{TRACE_ID}][%t][%p][%logger{0}:%L] %m%n</Property>
 		<Property name="LOG_MAX_SIZE">1 GB</Property>
